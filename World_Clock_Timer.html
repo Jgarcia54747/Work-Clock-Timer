@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Clock Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            width: 100vw;
+            overflow: hidden;
+        }
+        #status {
+            font-size: clamp(20px, 4vw, 36px);
+            font-weight: bold;
+            color: white;
+            margin-top: 20px;
+        }
+        #countdown {
+            font-size: clamp(24px, 5vw, 40px);
+            color: red;
+        }
+        h1 {
+            font-size: clamp(18px, 4vw, 28px);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Work Clock Timer</h1>
+    <div id="countdown">Loading...</div>
+    <br>
+    <div id="status">Loading...</div>
+
+    <script>
+        const schedule = [
+            { start: "07:15", end: "08:30", label: "Work" },
+            { start: "08:30", end: "08:45", label: "Break" },
+            { start: "08:45", end: "12:00", label: "Work" },
+            { start: "12:00", end: "12:30", label: "Lunch" },
+            { start: "12:30", end: "14:30", label: "Work" },
+            { start: "14:30", end: "14:45", label: "Break" },
+            { start: "14:45", end: "17:00", label: "Work" }
+        ];
+
+        function updateTimer() {
+            const now = new Date();
+            const currentTime = now.getHours() * 60 + now.getMinutes();
+            const currentSeconds = now.getSeconds();
+            
+            for (let i = 0; i < schedule.length; i++) {
+                const startMinutes = parseTime(schedule[i].start);
+                const endMinutes = parseTime(schedule[i].end);
+                
+                if (currentTime >= startMinutes && currentTime < endMinutes) {
+                    const remainingMinutes = endMinutes - currentTime - 1;
+                    const remainingSeconds = 60 - currentSeconds;
+                    document.getElementById("status").innerHTML = `Current: ${schedule[i].label}`;
+                    document.getElementById("countdown").innerHTML = `${Math.floor(remainingMinutes / 60)}h ${remainingMinutes % 60}m ${remainingSeconds}s left`;
+                    break;
+                }
+            }
+        }
+
+        function parseTime(timeStr) {
+            const [hours, minutes] = timeStr.split(":").map(Number);
+            return hours * 60 + minutes;
+        }
+        
+        updateTimer();
+        setInterval(updateTimer, 1000);
+    </script>
+</body>
+</html>
